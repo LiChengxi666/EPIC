@@ -1,0 +1,17 @@
+EPIC
+Copyright 2026 EPIC contributors.
+
+EPIC-specific additions and release tooling are licensed under Apache-2.0.
+This distribution contains a modified experiment snapshot of verl and code
+derived from it. The standalone root solver is extracted from that snapshot;
+the reference loss is a reduced single-process implementation of its EPIC path.
+All upstream copyright headers remain in the relevant files.
+
+verl attribution:
+Copyright 2023-2024 Bytedance Ltd. and/or its affiliates
+See vendor/verl/LICENSE and vendor/verl/Notice.txt, plus per-file notices.
+
+Third-party code, datasets, models, and other artifacts retain their respective
+licenses. This license does not grant rights to separately downloaded models
+or datasets. No model weights, benchmark problems, or institutional logos are
+distributed in this code package.

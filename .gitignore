@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+outputs/
+checkpoints/
+wandb/
+.env
+.env.*
+*.pem
+*.key
+histories.json
+regenerated_results/
