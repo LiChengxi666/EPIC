@@ -34,7 +34,11 @@ class TrainingConfigTests(unittest.TestCase):
         self.assertIn(config['policy_loss']['loss_mode'],text)
         self.assertIn(config['loss_agg_mode'],text)
         self.assertNotIn('experiments.json',text)
-        self.assertNotIn('![',text)
+        for name in ('epic-overview.png','prefix-clipping.png','training-curves.png'):
+            self.assertIn(f'](docs/images/{name})',text)
+            figure=ROOT/'docs/images'/name
+            self.assertTrue(figure.is_file())
+            self.assertTrue(figure.read_bytes().startswith(b'\x89PNG\r\n\x1a\n'))
 
     def test_dry_run_creates_nothing(self):
         with tempfile.TemporaryDirectory() as tmp:
