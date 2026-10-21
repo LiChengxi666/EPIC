@@ -25,12 +25,12 @@ reinforcement learning.
 
 For a prompt $x$ and generated prefix $y_{1:t}$, EPIC uses
 
-$$
+```math
 r_t^{\mathrm{pre}}
 =\frac{\pi_\theta(y_{1:t}\mid x)}{\mu(y_{1:t}\mid x)}
 =\prod_{k=1}^{t}
-\frac{\pi_\theta(y_k\mid x,y_{<k})}{\mu(y_k\mid x,y_{<k})}.
-$$
+\frac{\pi_\theta(y_k\mid x,y_{\lt k})}{\mu(y_k\mid x,y_{\lt k})}.
+```
 
 This is the exact change-of-measure factor for each stepwise term in the
 autoregressive performance-difference identity. For policies with common
