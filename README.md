@@ -22,7 +22,7 @@ EPIC/
 │   └── package_release.py
 ├── epic/                 # Standalone CPU reference implementation
 ├── tests/                # Loss, gradient, KL-bound, and configuration tests
-├── docs/images/          # Overview, clipping mechanism, and training curves
+├── docs/images/          # Clipping mechanism, memory usage, and training curves
 ├── DATA.md               # Model and dataset preparation
 ├── ENVIRONMENT.md        # Training environment and dependencies
 └── IMPLEMENTATION.md     # Training code locations and implementation details
@@ -37,13 +37,15 @@ performance-difference identity and a TRPO-inspired prefix trust region,
 it derives asymmetric clipping bounds from the exact KL coordinate
 $\phi(r)=r-1-\log r$, without a local quadratic approximation.
 
-[![EPIC overview: from autoregressive MDP to Exact-KL prefix clipping, benchmark gains over GSPO, and performance versus driver-process memory.](docs/images/epic-overview.png)](docs/images/epic-overview.png)
+[![Prefix-aware clipping and memory efficiency: ratio granularity, illustrative clipping decisions, and driver-process CPU memory.](docs/images/prefix-clipping.png)](docs/images/prefix-clipping.png)
 
-**EPIC at a glance.** **(a)** From the autoregressive performance-difference
-identity to a prefix trust region and practical clipped objective.
-**(b)** Benchmark gains over GSPO in percentage points.
-**(c)** Performance versus median driver-process CPU memory in the separate
-routing-replay comparison (not GPU memory). Click the figure to enlarge.
+**Prefix-aware clipping and memory efficiency.** **(a)** Token, response, and prefix
+ratios use different likelihood factors. **(b)** With positive advantages and
+illustrative bounds, EPIC detects cumulative drift missed by GRPO while
+preserving early-prefix signals suppressed by GSPO. Hatched boxes indicate
+clipped positions. **(c)** Driver-process resident CPU memory during training.
+EPIC uses less memory than GRPO Clip-Higher with R2 or R3, without requiring
+expert-routing replay. The vertical axis is logarithmic. Click the figure to enlarge.
 
 In the separate routing-replay comparison, EPIC achieves competitive
 performance while reducing median driver-process CPU memory by **77.5%**
@@ -71,16 +73,6 @@ geometric-mean normalization, probability-calibrated budgets, and a
 current-token-only gradient path. The exact identity motivates the clipping
 design; the practical surrogate does not enforce a hard distribution-level
 KL constraint.
-
-[![Prefix-aware clipping and memory efficiency: ratio granularity, illustrative clipping decisions, and driver-process CPU memory.](docs/images/prefix-clipping.png)](docs/images/prefix-clipping.png)
-
-**Prefix-aware clipping and memory efficiency.** **(a)** Token, response, and prefix
-ratios use different likelihood factors. **(b)** With positive advantages and
-illustrative bounds, EPIC detects cumulative drift missed by GRPO while
-preserving early-prefix signals suppressed by GSPO. Hatched boxes indicate
-clipped positions. **(c)** Driver-process resident CPU memory during training.
-EPIC uses less memory than GRPO Clip-Higher with R2 or R3, without requiring
-expert-routing replay. The vertical axis is logarithmic. Click the figure to enlarge.
 
 ### Main results
 

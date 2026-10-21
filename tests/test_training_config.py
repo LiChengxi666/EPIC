@@ -34,7 +34,10 @@ class TrainingConfigTests(unittest.TestCase):
         self.assertIn(config['policy_loss']['loss_mode'],text)
         self.assertIn(config['loss_agg_mode'],text)
         self.assertNotIn('experiments.json',text)
-        for name in ('epic-overview.png','prefix-clipping.png','training-curves.png'):
+        self.assertNotIn('docs/images/epic-overview.png', text)
+        self.assertEqual(text.count('[![Prefix-aware clipping'), 1)
+        self.assertLess(text.index('[![Prefix-aware clipping'), text.index('### Prefix-level clipping'))
+        for name in ('prefix-clipping.png','training-curves.png'):
             self.assertIn(f'](docs/images/{name})',text)
             figure=ROOT/'docs/images'/name
             self.assertTrue(figure.is_file())
