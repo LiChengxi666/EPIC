@@ -72,15 +72,15 @@ current-token-only gradient path. The exact identity motivates the clipping
 design; the practical surrogate does not enforce a hard distribution-level
 KL constraint.
 
-[![Why prefix-aware clipping is different: ratio granularity, illustrative clipping decisions, and Exact-KL geometry.](docs/images/prefix-clipping.png)](docs/images/prefix-clipping.png)
+[![Prefix-aware clipping and memory efficiency: ratio granularity, illustrative clipping decisions, and driver-process CPU memory.](docs/images/prefix-clipping.png)](docs/images/prefix-clipping.png)
 
-**Why prefix-aware clipping is different.** **(a)** Token, response, and prefix
+**Prefix-aware clipping and memory efficiency.** **(a)** Token, response, and prefix
 ratios use different likelihood factors. **(b)** With positive advantages and
 illustrative bounds, EPIC detects cumulative drift missed by GRPO while
 preserving early-prefix signals suppressed by GSPO. Hatched boxes indicate
-clipped positions. **(c)** The behavior-policy expectation of
-$\phi(r)=r-1-\log r$ equals the prefix-distribution KL divergence; coordinate
-budgets determine the clipping bounds. Click the figure to enlarge.
+clipped positions. **(c)** Driver-process resident CPU memory during training.
+EPIC uses less memory than GRPO Clip-Higher with R2 or R3, without requiring
+expert-routing replay. The vertical axis is logarithmic. Click the figure to enlarge.
 
 ### Main results
 
