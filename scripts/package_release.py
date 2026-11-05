@@ -17,6 +17,8 @@ EXCLUDED = {'.git', '.venv', '__pycache__', '.pytest_cache', 'build', 'dist',
 def files():
     for path in sorted(ROOT.rglob('*')):
         rel = path.relative_to(ROOT)
+        if rel.parts[0] in {'data', 'model', '.cache'}:
+            continue
         if any(p in EXCLUDED or p.endswith('.egg-info') for p in rel.parts):
             continue
         if path.is_symlink():

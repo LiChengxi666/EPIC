@@ -1,0 +1,56 @@
+[
+  {
+    "name": "train",
+    "repo": "BytedTsinghua-SIA/DAPO-Math-17k",
+    "revision": "65877096c24ffa7abc4e4fa5edb95cf3413a5674",
+    "filename": "data/dapo-math-17k.parquet",
+    "split": "train",
+    "output": "math-17k.parquet",
+    "data_source": "lighteval/MATH",
+    "expected_rows": 17917
+  },
+  {
+    "name": "amc23",
+    "repo": "math-ai/amc23",
+    "revision": "80815d37005feb82cd7f8fbc6901d5d3eff43057",
+    "filename": "test-00000-of-00001.parquet",
+    "split": "test",
+    "problem_field": "question",
+    "output": "evals/amc23.parquet",
+    "data_source": "amc23",
+    "expected_rows": 40
+  },
+  {
+    "name": "aime24",
+    "repo": "HuggingFaceH4/aime_2024",
+    "revision": "2fe88a2f1091d5048c0f36abc874fb997b3dd99a",
+    "filename": "data/train-00000-of-00001.parquet",
+    "split": "train",
+    "problem_field": "problem",
+    "output": "evals/aime24.parquet",
+    "data_source": "aime24",
+    "expected_rows": 30
+  },
+  {
+    "name": "aime25",
+    "repo": "math-ai/aime25",
+    "revision": "563bb8404243c5f09de6ec262f2db674fe5bce9b",
+    "filename": "test.jsonl",
+    "split": "test",
+    "problem_field": "problem",
+    "output": "evals/aime25.parquet",
+    "data_source": "aime25",
+    "expected_rows": 30
+  },
+  {
+    "name": "hmmt25",
+    "repo": "MathArena/hmmt_feb_2025",
+    "revision": "6fdc4277120810ff75aa22d2d5489b91f7a262a1",
+    "filename": "data/train-00000-of-00001.parquet",
+    "split": "train",
+    "problem_field": "problem",
+    "output": "evals/hmmt25.parquet",
+    "data_source": "hmmt25",
+    "expected_rows": 30
+  }
+]

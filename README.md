@@ -17,6 +17,7 @@ EPIC/
 ├── configs/              # EPIC, GRPO, DAPO, GSPO, CTPO, and RIPO configurations
 ├── scripts/
 │   ├── run_experiment.py # Resolve configurations and launch training
+│   ├── prepare_data.py   # Download pinned public data and create Parquet inputs
 │   ├── check_data.py     # Validate processed data
 │   ├── demo_loss.py      # Standalone loss example
 │   └── package_release.py
@@ -115,15 +116,23 @@ cd EPIC
 uv pip install --no-deps -e vendor/verl
 ```
 
+For containers, follow the [image build instructions](ENVIRONMENT.md#container-workflow).
+The Dockerfile requires an existing compatible training image; a public
+GPU-validated base image is not yet supplied.
+
 ### 2. Prepare the model and data
 
 The default configuration uses Qwen3-30B-A3B-Base and DAPO-Math-17K.
 Prepare the model and processed Parquet files following [DATA.md](DATA.md).
-Validate the input schema with:
+Download and prepare all five datasets, then validate them with:
 
 ```bash
-uv run --with pyarrow python scripts/check_data.py /shared/data
+uv run --no-project --with pyarrow python scripts/prepare_data.py --output /shared/data
+uv run --no-project --with pyarrow python scripts/check_data.py /shared/data --check-counts
 ```
+
+The preparation command requires a new output directory and records source
+revisions and checksums. Model weights are downloaded separately; see [DATA.md](DATA.md).
 
 ### 3. Configure and launch training
 

@@ -3,6 +3,46 @@
 Use [Qwen3-30B-A3B-Base](https://huggingface.co/Qwen/Qwen3-30B-A3B-Base)
 with the default configurations. Model weights and datasets are not bundled.
 
+## Download and prepare
+
+Run this on a CPU machine; CUDA and the training environment are not required:
+
+```bash
+uv run --no-project --with pyarrow python scripts/prepare_data.py --output data
+uv run --no-project --with pyarrow python scripts/check_data.py data --check-counts
+```
+
+The output directory must not already exist. Public files are downloaded from
+Hugging Face at pinned revisions and cached under `~/.cache/epic-data`. Use
+`--cache-dir /path/to/cache` to choose its location or `--offline` to reuse
+cached files without network access. Only PyArrow is required; no model or
+GPU training packages are installed by this command.
+
+The five upstream revisions are pinned in `configs/data/sources.json`.
+Preparation checks row counts and schema before making the output directory
+available. `preparation_manifest.json` records upstream commits, source-file
+SHA-256 hashes, output hashes, normalized-content hashes, and tool versions.
+Keep this manifest with experiment outputs. Generated data are excluded from
+Git and source release packages.
+
+The script preserves problem text, replaces DAPO's `Answer:` instruction with
+the boxed-answer instruction required by the configured verifier, and applies
+that same instruction to evaluation questions. Evaluation solutions are never
+included in prompts. AMC23 duplicates are removed only when their answers
+agree; conflicting answers cause an error. Answers remain strings, preserving
+fractions and other mathematical expressions.
+
+The pinned DAPO file contains 1,791,700 rows (about 299 MB), including repeated
+source IDs. The script reads it in batches and keeps the first occurrence of
+each ID after checking that repeated entries agree, producing 17,917 training
+examples. It does not load the expanded file into Python objects all at once.
+
+This is a versioned public preparation recipe. Its outputs have not been
+established as byte-for-byte or prompt-identical copies of historical training
+inputs. Matching counts and schema alone does not establish that equivalence.
+
+## Sources and schema
+
 The launcher expects these processed Parquet files below `--data`:
 
 | File | Public source |
@@ -25,13 +65,15 @@ Prompts should request step-by-step reasoning and a final answer in `\boxed{}`
 to match the supplied answer verifier. Remove duplicate AMC23 prompts.
 
 ```bash
-uv run --with pyarrow python scripts/check_data.py /shared/data
+uv run --no-project --with pyarrow python scripts/check_data.py /shared/data
 ```
 
-This checks existing input files; it is not a downloader or raw-data preparation
-script. Add `--check-counts` to also check the default dataset sizes: 17,917
+The checker validates existing input files. Add `--check-counts` to also check the default dataset sizes: 17,917
 training rows and 40/30/30/30 validation rows. The checker does not compare
 against private or historical dataset fingerprints.
 
 For different datasets, update the configuration paths, source dispatch and
 reward function together. Respect each dataset's license.
+In particular, the pinned HMMT source declares CC-BY-NC-SA-4.0; repository
+Apache-2.0 licensing does not replace dataset terms. Consult the upstream cards
+for each dataset's current terms.
