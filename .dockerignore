@@ -1,6 +1,6 @@
 **
 !docker/
-!docker/Dockerfile
+!docker/**
 !vendor/
 !vendor/verl/
 !vendor/verl/**
@@ -18,6 +18,10 @@
 !DATA.md
 !ENVIRONMENT.md
 !IMPLEMENTATION.md
+
+!docs/
+!docs/images/
+!docs/images/**
 **/__pycache__/
 **/*.pyc
 **/*.egg-info/

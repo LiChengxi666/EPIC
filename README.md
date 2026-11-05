@@ -106,19 +106,19 @@ complement the selected-checkpoint results above. Click the figure to enlarge.
 
 ### 1. Set up the environment
 
-Prepare a Linux/CUDA environment with compatible PyTorch, Megatron, vLLM and
-Ray versions as described in [ENVIRONMENT.md](ENVIRONMENT.md), then install
-the included verl implementation:
+Build the public CUDA training image as described in
+[ENVIRONMENT.md](ENVIRONMENT.md):
 
 ```bash
 git clone https://github.com/LiChengxi666/EPIC.git
 cd EPIC
-uv pip install --no-deps -e vendor/verl
+docker build -f docker/Dockerfile -t epic:local .
 ```
 
-For containers, follow the [image build instructions](ENVIRONMENT.md#container-workflow).
-The Dockerfile requires an existing compatible training image; a public
-GPU-validated base image is not yet supplied.
+The image uses a pinned public vLLM/CUDA base and installs the complete
+Megatron/MBridge/Transformer Engine/Apex stack with compatible FlashAttention.
+No private image or organization account is required. The environment guide
+includes GPU checks, shared-data mounts and Ray cluster startup commands.
 
 ### 2. Prepare the model and data
 
@@ -127,8 +127,10 @@ Prepare the model and processed Parquet files following [DATA.md](DATA.md).
 Download and prepare all five datasets, then validate them with:
 
 ```bash
-uv run --no-project --with pyarrow python scripts/prepare_data.py --output /shared/data
-uv run --no-project --with pyarrow python scripts/check_data.py /shared/data --check-counts
+docker run --rm -v /shared:/shared epic:local \
+  python scripts/prepare_data.py --output /shared/data
+docker run --rm -v /shared:/shared epic:local \
+  python scripts/check_data.py /shared/data --check-counts
 ```
 
 The preparation command requires a new output directory and records source
@@ -140,7 +142,8 @@ The default configuration uses 32 A100 GPUs across four nodes. Prepare a Ray
 cluster as described in [ENVIRONMENT.md](ENVIRONMENT.md#distributed-setup);
 the launcher connects to it but does not allocate nodes. First inspect the
 configuration by running the command below **without `--execute`**. When the
-paths, resources, and configuration are ready, launch training with:
+paths, resources, and configuration are ready, run this inside the head-node
+training container:
 
 ```bash
 python scripts/run_experiment.py epic \
@@ -193,7 +196,7 @@ reference, not the distributed training entry point.
 ## Tests
 
 ```bash
-uv run --with torch --with numpy python -m unittest discover -s tests -v
+docker run --rm epic:local python -m unittest discover -s tests -v
 ```
 
 Tests cover loss computation, prefix gradients, KL-coordinate roots and launch

@@ -1,0 +1,5 @@
+# Megatron 0.15's development dependency range selects TE 2.9.x.
+# Both the CUDA library and the compiled PyTorch extension are required.
+megatron-core==0.15.0
+mbridge==0.15.1
+transformer-engine[pytorch,core-cu12]==2.9.0

@@ -1,22 +1,36 @@
 # Model and data
 
 Use [Qwen3-30B-A3B-Base](https://huggingface.co/Qwen/Qwen3-30B-A3B-Base)
-with the default configurations. Model weights and datasets are not bundled.
+with the default configurations. Model weights and datasets are not bundled. Download the public model into the
+shared directory using the training image:
+
+```bash
+docker run --rm -v /shared:/shared epic:local \
+  hf download Qwen/Qwen3-30B-A3B-Base \
+  --local-dir /shared/model/Qwen3-30B-A3B-Base
+```
+
+See [ENVIRONMENT.md](ENVIRONMENT.md) for building the image. The model directory
+must contain all weight shards, configuration and tokenizer files.
 
 ## Download and prepare
 
-Run this on a CPU machine; CUDA and the training environment are not required:
+Prepare data using the training image on a CPU machine; these commands do not
+request GPUs:
 
 ```bash
-uv run --no-project --with pyarrow python scripts/prepare_data.py --output data
-uv run --no-project --with pyarrow python scripts/check_data.py data --check-counts
+docker run --rm -v /shared:/shared epic:local \
+  python scripts/prepare_data.py --output /shared/data
+docker run --rm -v /shared:/shared epic:local \
+  python scripts/check_data.py /shared/data --check-counts
 ```
 
 The output directory must not already exist. Public files are downloaded from
 Hugging Face at pinned revisions and cached under `~/.cache/epic-data`. Use
 `--cache-dir /path/to/cache` to choose its location or `--offline` to reuse
-cached files without network access. Only PyArrow is required; no model or
-GPU training packages are installed by this command.
+cached files without network access. For standalone CPU use, install PyArrow in your Python environment and run
+the same scripts directly; the preparation code does not require CUDA or model
+weights.
 
 The five upstream revisions are pinned in `configs/data/sources.json`.
 Preparation checks row counts and schema before making the output directory
@@ -65,7 +79,8 @@ Prompts should request step-by-step reasoning and a final answer in `\boxed{}`
 to match the supplied answer verifier. Remove duplicate AMC23 prompts.
 
 ```bash
-uv run --no-project --with pyarrow python scripts/check_data.py /shared/data
+docker run --rm -v /shared:/shared epic:local \
+  python scripts/check_data.py /shared/data
 ```
 
 The checker validates existing input files. Add `--check-counts` to also check the default dataset sizes: 17,917

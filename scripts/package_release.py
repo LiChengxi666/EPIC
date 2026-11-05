@@ -17,7 +17,9 @@ EXCLUDED = {'.git', '.venv', '__pycache__', '.pytest_cache', 'build', 'dist',
 def files():
     for path in sorted(ROOT.rglob('*')):
         rel = path.relative_to(ROOT)
-        if rel.parts[0] in {'data', 'model', '.cache'}:
+        if rel.parts[0] in {'data', 'model', '.cache'} or rel.parts[0].startswith('.epic-data-'):
+            continue
+        if rel.parts[:2] in {('docker', 'wheels'), ('docker', 'flash-attn')} and path.name != '.gitkeep':
             continue
         if any(p in EXCLUDED or p.endswith('.egg-info') for p in rel.parts):
             continue

@@ -18,3 +18,11 @@ regenerated_results/
 /data/
 /model/
 /.cache/
+
+/.epic-data-*/
+
+/docker/wheels/*
+!/docker/wheels/.gitkeep
+
+/docker/flash-attn/*
+!/docker/flash-attn/.gitkeep
